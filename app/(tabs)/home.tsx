@@ -5,13 +5,14 @@ import { images, icons } from '../../constants'
 import SearchInput from '@/components/SearchInput'
 import Trending from '@/components/Trending'
 import EmptyState from '@/components/EmptyState'
-import { getAllPosts } from '@/lib/appwrite'
+import { getAllPosts, getLatestPosts } from '@/lib/appwrite'
 import useAppWrite from '@/hooks/useAppwrite'
 import VideoCard from '@/components/VideoCard'
 
 const Home = () => {
   const { data: posts, refetch } = useAppWrite(getAllPosts);
-  console.log(posts)
+  const { data: latestPosts } = useAppWrite(getLatestPosts);
+  // console.log(posts)
   const [refreshing, setRefreshing] = useState(false)
   const onRefresh = async () => {
     setRefreshing(true)
@@ -24,7 +25,7 @@ const Home = () => {
       <FlatList
         data={posts}
         //  @ts-ignore
-        keyExtractor={(post) => post.id}
+        keyExtractor={(post) => post.$id}
         renderItem={({ item }) => (
           // @ts-ignore
           <>
@@ -68,7 +69,7 @@ const Home = () => {
                 <Text className='text-gray-100 text-lg font-pregular mb-3'>
                   Latest Videos
                 </Text>
-                <Trending posts={[{ id: 1 }]} />
+                <Trending posts={latestPosts} />
               </View>
             </View>
           );
